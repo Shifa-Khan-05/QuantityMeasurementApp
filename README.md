@@ -119,3 +119,169 @@ The application can now:
 * Foundation ready for abstraction in next UC
 
 ---
+
+## Refactored Architecture & Conversion Support (UC3–UC5)
+
+This phase of the project focuses on refactoring, extensibility, and explicit unit conversion while maintaining full Test-Driven Development (TDD) discipline.
+
+The design evolved from unit-specific classes to a scalable and extensible measurement system.
+
+---
+
+# UC3 — Refactor to Generic Length Model
+
+## Goal
+
+Eliminate duplication and introduce a generic, scalable design.
+
+## Refactoring Performed
+
+Removed:
+
+* Feet class
+* Inches class
+
+Introduced:
+
+* `Length` class
+* `LengthUnit` enum
+
+## Core Design
+
+Instead of separate classes for each unit:
+
+Length(value, LengthUnit)
+
+## Base Unit Strategy
+
+All measurements are internally converted to a common base unit: **Inches**
+
+Conversion rules:
+
+* FEET → 12 inches
+* INCHES → 1 inch
+
+Added:
+
+convertToBaseUnit()
+
+## Tests Covered
+
+* Feet equals Feet
+* Inches equals Inches
+* 1 Foot equals 12 Inches
+* Symmetry validation
+* Transitive equality
+* Full equals contract validation
+
+## Learning
+
+* Safe refactoring using tests
+* Generic domain modeling
+* DRY principle implementation
+
+---
+
+# UC4 — Extensibility with New Units
+
+## Goal
+
+Validate that the architecture supports adding new units without modifying core logic.
+
+## Units Added
+
+* YARDS
+* CENTIMETERS
+
+Only the `LengthUnit` enum was updated.
+No changes were made to equality logic.
+
+## Conversion Factors
+
+| Unit         | Inches Equivalent |
+| ------------ | ----------------- |
+| 1 Foot       | 12                |
+| 1 Yard       | 36                |
+| 1 Inch       | 1                 |
+| 1 Centimeter | 0.393701          |
+
+## Tests Added
+
+* Yard equals Yard
+* Yard equals Feet
+* Yard equals Inches
+* Feet equals Yard
+* Inches equals Yard
+* Centimeter equals Inches
+* Centimeter not equal to Feet
+* Transitive validation
+
+## Learning
+
+* Applied Open/Closed Principle
+* Confirmed scalable architecture
+* Extended system without modifying existing logic
+
+---
+
+# UC5 — Explicit Unit Conversion
+
+## Goal
+
+Add direct unit conversion capability.
+
+Until UC4, the system only supported equality comparison.
+UC5 introduces a formal conversion API.
+
+## Features Added
+
+### Static Conversion Method
+
+convert(value, fromUnit, toUnit)
+
+### Instance Conversion Method
+
+length.convertTo(targetUnit)
+
+### Helper Methods
+
+Overloaded utilities for cleaner API usage.
+
+## Conversion Strategy
+
+1. Convert source value to base unit (Inches)
+2. Convert base unit to target unit
+
+Ensures consistent and reusable logic.
+
+## Test Coverage
+
+* Feet ↔ Inches conversion
+* Yards ↔ Inches conversion
+* Centimeters ↔ Inches conversion
+* Zero and negative values
+* Round-trip conversion
+* Null and NaN validation
+
+All previous tests remain green.
+
+## Learning
+
+* Clean API design
+* Reusable architecture
+* Safe feature extension
+* Strong edge-case validation
+
+---
+
+# Current System Capabilities
+
+The application now supports:
+
+* Cross-unit equality comparison
+* Base-unit normalization
+* Extensible unit addition
+* Explicit unit conversion API
+* Full test-driven safety
+
+---
