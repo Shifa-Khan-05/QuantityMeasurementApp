@@ -1,6 +1,5 @@
 package com.apps.quantitymeasurement;
 
-
 public class QuantityMeasurementApp {
 
 	// generic equality demo
