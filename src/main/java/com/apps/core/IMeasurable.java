@@ -1,4 +1,4 @@
-package com.apps.quantitymeasurement;
+package com.apps.core;
 
 /*
  * UC14 Enhancements:
