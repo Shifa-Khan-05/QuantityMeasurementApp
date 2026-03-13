@@ -1459,3 +1459,167 @@ All previous test cases pass without modification.
 * Preserving backward compatibility in large systems
 
 ---
+
+# UC15 — N-Tier Architecture Refactoring
+
+UC15 restructures the application into a **clean N-Tier architecture** to improve maintainability, scalability, and separation of concerns.
+
+### Architecture
+
+```
+Application Layer
+        │
+Controller Layer
+        │
+Service Layer
+        │
+Repository Layer
+        │
+Entity / Model Layer
+```
+
+### Layers
+
+**Application Layer**
+
+* `QuantityMeasurementApp`
+* Entry point of the system
+
+**Controller Layer**
+
+* `QuantityMeasurementController`
+* Handles user requests and delegates to service
+
+**Service Layer**
+
+* `IQuantityMeasurementService`
+* `QuantityMeasurementServiceImpl`
+* Contains business logic (compare, add, subtract, divide)
+
+**Repository Layer**
+
+* `IQuantityMeasurementRepository`
+* `QuantityMeasurementCacheRepository`
+* Stores measurement history
+
+**Entity / Model Layer**
+
+* `QuantityDTO`
+* `QuantityModel`
+* `QuantityMeasurementEntity`
+
+### Design Principles
+
+* Separation of Concerns
+* SOLID Principles
+* Dependency Injection
+
+### Design Patterns
+
+* Singleton Pattern
+* Factory Pattern
+* Facade Pattern
+
+---
+
+# UC16 — Database Integration with JDBC
+
+UC16 enhances the architecture by introducing **persistent database storage using JDBC**.
+
+The system now supports **long-term storage and retrieval of quantity measurement operations**.
+
+### Key Enhancements
+
+**JDBC Repository Implementation**
+
+* `QuantityMeasurementDatabaseRepository`
+* Performs CRUD operations on measurement data
+* Uses parameterized SQL queries for security
+
+**Database Used**
+
+* H2 (in-memory database for development/testing)
+
+Future ready for:
+
+* MySQL
+* PostgreSQL
+
+---
+
+### Maven Project Structure
+
+The project now follows **standard Maven layout**:
+
+```
+src/main/java
+src/main/resources
+src/test/java
+pom.xml
+```
+
+Packages organized by layer:
+
+* controller
+* service
+* repository
+* entity
+* exception
+* util
+* unit
+
+---
+
+### Additional Components Introduced
+
+**ApplicationConfig**
+
+* Loads configuration from `application.properties`
+
+**ConnectionPool**
+
+* Manages reusable JDBC connections
+* Improves performance
+
+**DatabaseException**
+
+* Custom exception for database operations
+
+---
+
+### Dependency Injection Support
+
+Service layer can now work with either:
+
+* `QuantityMeasurementCacheRepository`
+* `QuantityMeasurementDatabaseRepository`
+
+Repository type is selected via configuration.
+
+---
+
+# Testing
+
+Test coverage includes:
+
+* Repository operations
+* Service logic
+* Controller flow
+* Database persistence
+* Integration testing using H2 database
+
+All **UC1 – UC14 functionality remains fully compatible**.
+
+---
+
+# Learning Outcomes
+
+* Implementing N-Tier Architecture
+* Designing scalable application layers
+* JDBC database integration
+* Connection pooling
+* Maven project management
+* Secure SQL query handling
+* Writing integration tests with database
+
+---
