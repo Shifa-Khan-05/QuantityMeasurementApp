@@ -1,8 +1,11 @@
 package com.app.quantitymeasurement.controller;
 
+import com.app.quantitymeasurement.dto.QuantityDTO;
 import com.app.quantitymeasurement.service.IQuantityMeasurementService;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuantityMeasurementController.class)
 public class QuantityMeasurementControllerTest {
@@ -28,6 +31,9 @@ public class QuantityMeasurementControllerTest {
     @WithMockUser
     void testCompareAPI() throws Exception {
 
+        Mockito.when(service.compare(Mockito.any(), Mockito.any()))
+                .thenReturn(true);
+
         String json = """
         {
           "thisQuantityDTO":{"value":1,"unit":"FEET"},
@@ -39,7 +45,8 @@ public class QuantityMeasurementControllerTest {
                 .with(csrf())
                 .contentType("application/json")
                 .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
     }
 
     // ================= ADD =================
@@ -47,6 +54,9 @@ public class QuantityMeasurementControllerTest {
     @Test
     @WithMockUser
     void testAddAPI() throws Exception {
+
+        Mockito.when(service.add(Mockito.any(), Mockito.any()))
+                .thenReturn(new QuantityDTO(2.0, "FEET"));
 
         String json = """
         {
@@ -68,6 +78,9 @@ public class QuantityMeasurementControllerTest {
     @WithMockUser
     void testSubtractAPI() throws Exception {
 
+        Mockito.when(service.subtract(Mockito.any(), Mockito.any()))
+                .thenReturn(new QuantityDTO(1.0, "FEET"));
+
         String json = """
         {
           "thisQuantityDTO":{"value":2,"unit":"FEET"},
@@ -87,6 +100,9 @@ public class QuantityMeasurementControllerTest {
     @Test
     @WithMockUser
     void testDivideAPI() throws Exception {
+
+        Mockito.when(service.divide(Mockito.any(), Mockito.any()))
+                .thenReturn(12.0);
 
         String json = """
         {
@@ -108,6 +124,9 @@ public class QuantityMeasurementControllerTest {
     @WithMockUser
     void testConvertAPI() throws Exception {
 
+        Mockito.when(service.convert(Mockito.any(), Mockito.any()))
+                .thenReturn(new QuantityDTO(12.0, "INCHES"));
+
         String json = """
         {
           "value":1,
@@ -121,5 +140,4 @@ public class QuantityMeasurementControllerTest {
                 .content(json))
                 .andExpect(status().isOk());
     }
-
 }
