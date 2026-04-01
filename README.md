@@ -1,79 +1,184 @@
-<<<<<<< HEAD
-# Secure Quantity Measurement System (UC1–UC18)
+# Quantity Measurement Application
 
-## 📌 Overview
-This project is a robust, Spring Boot-based **Quantity Measurement System** that has evolved through an incremental **Test-Driven Development (TDD)** workflow. Use Case 18 (UC18) introduces a secure, stateless authentication architecture integrating **JWT** and **OAuth2 (Google/GitHub)**, ensuring high-level security while maintaining backward compatibility with the core measurement logic.
+## Overview
 
----
+The **Quantity Measurement Application** is a scalable and extensible system developed using **Test-Driven Development (TDD)** principles. It supports multiple measurement categories such as **Length, Weight, Volume, and Temperature**, along with advanced arithmetic operations and secure authentication.
 
-## 🛡️ Security Architecture (UC18)
-The system employs a layered security structure within the `security/` package:
-
-### **JWT Authentication (`security/jwt/`)**
-* **JwtTokenProvider:** Handles generation, parsing, validation, and claim extraction.
-* **JwtAuthenticationFilter:** Intercepts HTTP requests to establish the security context.
-* **Handlers:** Includes `JwtAuthenticationEntryPoint` (401 Unauthorized) and `JwtAccessDeniedHandler` (403 Forbidden).
-
-### **OAuth2 Integration (`security/oauth2/`)**
-* **CustomOAuth2UserService:** Maps social profiles (Google/GitHub) to application users.
-* **Success/Failure Handlers:** Manages JWT generation post-login or handles authentication errors.
+The project has evolved incrementally through multiple use cases (UC1–UC18), ensuring clean architecture, maintainability, and extensibility.
 
 ---
 
-## 🏗️ Domain & Data Model
-* **Identity:** `User` entity with `UserRepository` (JPA) supporting email and provider-based lookups.
-* **Enums:** Type-safe constants for `Role` (USER, ADMIN), `AuthProvider` (LOCAL, GOOGLE, GITHUB).
-* **DTO Layer:** * **Requests:** `AuthRequest`, `RegisterRequest` (located in `dto/request/`).
-    * **Responses:** `AuthResponse` (located in `dto/response/`).
+## Key Features
+
+### Measurement Capabilities
+
+* Cross-unit equality comparison
+* Unit conversion across categories
+* Arithmetic operations:
+
+  * Addition
+  * Subtraction
+  * Division
+* Explicit target unit operations
+* Multi-category support:
+
+  * Length
+  * Weight
+  * Volume
+  * Temperature (conversion only)
+
+### Architecture
+
+* Generic design using `Quantity<U extends IMeasurable>`
+* N-Tier Architecture:
+
+  * Controller Layer
+  * Service Layer
+  * Repository Layer
+  * Model/Entity Layer
+* Clean separation of concerns
+* DRY and SOLID principles applied
+
+### Security (UC18)
+
+* JWT-based authentication
+* OAuth2 login (Google & GitHub)
+* Stateless session management
+* Role-based access control
+
+### Persistence
+
+* JDBC integration
+* H2 database (default)
+* Pluggable repository (Cache / Database)
 
 ---
 
-## 🧪 Testing Suite (TDD)
-The project maintains 100% functional integrity through comprehensive test coverage:
-* **Unit Tests:** Validating JWT logic, User mapping, and DTO constraints.
-* **Integration Tests:** Verifying synergy between Spring Security, JPA, and REST endpoints.
-* **Legacy Support:** `QuantityMeasurementServiceIntegrationTest` ensures core measurement logic (UC1-UC17) remains unaffected.
+## Technology Stack
+
+* Java (Core + Generics)
+* Spring Boot
+* Spring Security
+* JWT (JSON Web Token)
+* OAuth2 (Google, GitHub)
+* JDBC
+* H2 Database
+* Maven
+* JUnit (TDD approach)
 
 ---
 
-## ⚙️ Development Workflow
-1. **Red:** Define expected behavior through failing tests.
-2. **Green:** Implement minimal code to satisfy requirements.
-3. **Refactor:** Clean and optimize while preserving existing behavior.
-4. **Evolve:** Incremental capability-based growth across measurement categories.
+## Development Approach
+
+This project strictly follows the **TDD cycle**:
+
+1. Write failing test cases
+2. Implement minimal code
+3. Refactor safely
+
+This ensures:
+
+* High reliability
+* Clean design evolution
+* Strong test coverage
 
 ---
 
-# 📜 Project Evolution (History)
+## System Architecture
 
-<details>
-<summary>Click to view Use Cases 1–17 details</summary>
-
-### UC1 — UC5: Foundations & Refactoring
-* **UC1-UC2:** Initial TDD for Feet and Inches equality.
-* **UC3-UC5:** Refactored to a generic `Length` model with unit conversion (Yards, CM) and a centralized `convertToBaseUnit` strategy.
-
-### UC6 — UC9: Arithmetic & Weight
-* **UC6-UC7:** Addition support with explicit target units.
-* **UC8-UC9:** Refactored enums and introduced **Weight** measurement (KG, Grams, Pounds).
-
-### UC10 — UC12: Generics & Volume
-* **UC10-UC11:** Introduced `IMeasurable` interface and Generic `Quantity<U>` class. Added **Volume** (Litres, ML, Gallons).
-* **UC12:** Implemented Subtraction and Division (dimensionless ratio).
-
-### UC13 — UC14: DRY Refactor & Temperature
-* **UC13:** Centralized arithmetic logic using the `ArithmeticOperation` enum.
-* **UC14:** Added **Temperature** (Celsius, Fahrenheit, Kelvin) with non-linear formulas and restricted arithmetic support.
-
-### UC15 — UC17: N-Tier & Persistence
-* **UC15:** Refactored into Application, Controller, Service, and Repository layers.
-* **UC16:** Database integration using JDBC and Connection Pooling.
-* **UC17:** Spring Boot Integration and REST API development.
-
-</details>
+```
+Application Layer
+        │
+Controller Layer
+        │
+Service Layer
+        │
+Repository Layer
+        │
+Entity / Model Layer
+```
 
 ---
-*Developed by [Shifa Khan] - 2026*
->>>>>>> dev
+
+## Project Evolution (Highlights)
+
+* **UC1–UC2:** Basic equality (Feet, Inches)
+* **UC3–UC5:** Generic Length model + conversion
+* **UC6–UC7:** Addition operations
+* **UC8–UC10:** Refactoring + Generic architecture
+* **UC9–UC11:** Multi-category support (Weight, Volume)
+* **UC12–UC13:** Arithmetic operations + DRY refactor
+* **UC14:** Temperature (non-linear conversion)
+* **UC15:** N-Tier architecture
+* **UC16:** JDBC database integration
+* **UC18:** Security with JWT & OAuth2
+
+---
+
+## Security Architecture
+
+### JWT
+
+* Token generation and validation
+* Request filtering
+* Secure API access
+
+### OAuth2
+
+* Google and GitHub login
+* Custom user mapping
+* Success & failure handlers
+
+---
+
+## Testing
+
+* Unit Tests
+* Integration Tests
+* Security Tests
+* Repository & Service Tests
+* Full backward compatibility maintained across all use cases
+
+---
+
+## How to Run
+
+1. Clone the repository:
+
+```
+git clone <repository-url>
+```
+
+2. Navigate to main branch:
+
+```
+git checkout main
+```
+
+3. Run the application:
+
+```
+mvn spring-boot:run
+```
+
+---
+
+## Design Principles
+
+* SOLID Principles
+* DRY (Don't Repeat Yourself)
+* Immutability
+* Generic Programming
+* Interface Segregation
+* Open/Closed Principle
+
+---
+
+## Future Enhancements
+
+* UI Integration (React frontend)
+* Cloud deployment
+* Microservices architecture
+* Advanced analytics on measurement history
 
 ---
