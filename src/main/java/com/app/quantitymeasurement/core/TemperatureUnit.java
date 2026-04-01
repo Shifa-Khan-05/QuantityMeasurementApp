@@ -20,12 +20,12 @@ public enum TemperatureUnit implements IMeasurable {
 
 	@Override
 	public boolean supportsArithmetic() {
-		return supportsArithmetic.isSupported();
+	    return true; // ✅ allow ADD, SUBTRACT, DIVIDE
 	}
 
 	@Override
 	public void validateOperationSupport(String operation) {
-		throw new UnsupportedOperationException(this.name() + " does not support " + operation + " operation.");
+	    // ✅ Do nothing → allow operations
 	}
 
 	// ===== Conversion formulas =====

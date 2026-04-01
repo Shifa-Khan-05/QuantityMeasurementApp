@@ -19,4 +19,21 @@ public class GlobalExceptionHandler {
        
     	return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneral(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Something went wrong: " + ex.getMessage());
+    }
+    
+    
 }
