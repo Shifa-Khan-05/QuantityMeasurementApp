@@ -1,0 +1,60 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: auth-service
+  
+  # This tells Spring to look for your secret file in the parent directory
+  config:
+    import: "optional:file:../application-secrets.yml" 
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_db?createDatabaseIfNotExist=true
+    username: ${GLOBAL_DB_USERNAME:root}
+    password: ${GLOBAL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GLOBAL_GOOGLE_CLIENT_ID}
+            client-secret: ${GLOBAL_GOOGLE_CLIENT_SECRET}
+
+  boot:
+    admin:
+      client:
+        url: http://localhost:9090
+
+jwt:
+  secretkey: ${GLOBAL_JWT_SECRET}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

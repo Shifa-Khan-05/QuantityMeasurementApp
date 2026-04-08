@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  # Link to your parent folder secrets
+  config:
+    import: "optional:file:../application-secrets.yml"
+
+  cloud:
+    gateway:
+      # Updated property namespace for Spring Boot 3.5+
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOrigins: "http://localhost:3000"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+          routes:
+            # Route 1: Auth Service
+            - id: auth-service-route
+              uri: lb://AUTH-SERVICE
+              predicates:
+                - Path=/auth/**
+
+            # Route 2: QMA Service
+            - id: qma-service-route
+              uri: lb://QMA-SERVICE
+              predicates:
+                - Path=/api/v1/quantities/**
+              filters:
+                - StripPrefix=0
+
+  boot:
+    admin:
+      client:
+        url: http://localhost:9090
+
+# Hidden secrets retrieved from application-secrets.yml
+jwt:
+  secretkey: ${GLOBAL_JWT_SECRET}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
