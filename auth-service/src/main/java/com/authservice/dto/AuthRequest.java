@@ -1,11 +1,10 @@
 package com.authservice.dto;
+import lombok.*;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
+@Data // This generates getEmail() and getPassword()
 @NoArgsConstructor
+@AllArgsConstructor
 public class AuthRequest {
-	private String email;
-	private String password;
+    private String email;
+    private String password;
 }

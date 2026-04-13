@@ -13,38 +13,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable()) // Handled by Gateway
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**").permitAll()
+                // Permit these two conversion routes without login
+                .requestMatchers("/api/v1/quantities/convert/**", "/api/v1/quantities/compare").permitAll()
+                // ✅ ALL other quantity routes (add, subtract, history) require ROLE_USER
+                .requestMatchers("/api/v1/quantities/**").hasAuthority("ROLE_USER")
+                .anyRequest().authenticated()
+            );
 
-	    http.csrf(csrf -> csrf.disable())
-	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	        .authorizeHttpRequests(authorize -> authorize
-
-	            //VERY IMPORTANT (for Admin Server)
-	            .requestMatchers("/actuator/**").permitAll()
-
-	            // Public APIs
-	            .requestMatchers(
-	                "/api/v1/quantities/convert/**",
-	                "/api/v1/quantities/compare"
-	            ).permitAll()
-
-	            // Protected APIs
-	            .requestMatchers(
-	                "/api/v1/quantities/add",
-	                "/api/v1/quantities/subtract",
-	                "/api/v1/quantities/divide",
-	                "/api/v1/quantities/history"
-	            ).authenticated()
-
-	            .anyRequest().authenticated()
-	        );
-
-	    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-	    return http.build();
-	}
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 }

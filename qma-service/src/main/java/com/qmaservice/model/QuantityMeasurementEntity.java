@@ -1,11 +1,9 @@
 package com.qmaservice.model;
 
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -16,13 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class QuantityMeasurementEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private Long userId;
+    // CHANGED: From Long userId to String userEmail to match JWT Principal
+    private String userEmail;
 
     private String operation;
     private String operand1;
@@ -30,7 +29,6 @@ public class QuantityMeasurementEntity implements Serializable {
     private String result;
     private String errorMessage;
 
-    // Automatically records when the operation was performed
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -38,9 +36,9 @@ public class QuantityMeasurementEntity implements Serializable {
         createdAt = LocalDateTime.now();
     }
 
-    // Manual constructor for cleaner use in the Service layer
-    public QuantityMeasurementEntity(Long userId, String operation, String operand1, String operand2, String result) {
-        this.userId = userId;
+    // Manual constructor updated to use String userEmail
+    public QuantityMeasurementEntity(String userEmail, String operation, String operand1, String operand2, String result) {
+        this.userEmail = userEmail;
         this.operation = operation;
         this.operand1 = operand1;
         this.operand2 = operand2;

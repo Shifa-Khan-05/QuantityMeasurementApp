@@ -5,59 +5,49 @@ spring:
   application:
     name: api-gateway
 
-  # Link to your parent folder secrets
   config:
-    import: "optional:file:../application-secrets.yml"
+   import: "optional:classpath:application-secrets.yml"
 
   cloud:
     gateway:
-      # Updated property namespace for Spring Boot 3.5+
+      # CRITICAL FIX: The structure for Spring Boot 3.4/3.5 requires 'server.webflux'
       server:
         webflux:
           globalcors:
+            add-to-chain: true
             cors-configurations:
               "[/**]":
-                allowedOrigins: "http://localhost:3000"
+                allowedOrigins: "http://localhost:5173"
                 allowedMethods: "*"
                 allowedHeaders: "*"
+                allowCredentials: true
           routes:
-            # Route 1: Auth Service
-            - id: auth-service-route
-              uri: lb://AUTH-SERVICE
+            - id: auth-service-combined
+              uri: lb://auth-service
               predicates:
-                - Path=/auth/**
+                - Path=/auth/**, /oauth2/**, /login/**
 
-            # Route 2: QMA Service
             - id: qma-service-route
-              uri: lb://QMA-SERVICE
+              uri: lb://qma-service
               predicates:
                 - Path=/api/v1/quantities/**
               filters:
                 - StripPrefix=0
 
-  boot:
-    admin:
-      client:
-        url: http://localhost:9090
-
-# Hidden secrets retrieved from application-secrets.yml
 jwt:
   secretkey: ${GLOBAL_JWT_SECRET}
 
 eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
+    registry-fetch-interval-seconds: 5
+    instance-info-replication-interval-seconds: 5
 
 management:
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
   endpoints:
     web:
       exposure:

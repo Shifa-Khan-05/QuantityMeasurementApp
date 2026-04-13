@@ -1,0 +1,11 @@
+# Step 1: Use Eclipse Temurin (Official OpenJDK replacement)
+FROM eclipse-temurin:17-jdk-focal
+
+# Step 2: Set the working directory inside the container
+WORKDIR /app
+
+# Step 3: Copy the executable JAR file
+COPY target/*.jar app.jar
+
+# Step 4: Run the web service
+ENTRYPOINT ["java", "-jar", "app.jar"]

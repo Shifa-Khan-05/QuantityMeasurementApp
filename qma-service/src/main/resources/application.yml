@@ -5,9 +5,8 @@ spring:
   application:
     name: qma-service
 
-  # Link to your parent folder secrets
   config:
-    import: "optional:file:../application-secrets.yml"
+    import: "optional:classpath:application-secrets.yml"
 
   datasource:
     url: jdbc:mysql://localhost:3306/qma_db?createDatabaseIfNotExist=true
@@ -23,29 +22,28 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
-  # Redis Configuration
   data:
     redis:
       host: localhost
       port: 6379
 
-  # Cache Configuration
   cache:
     type: redis
     redis:
-      time-to-live: 600000 # 10 minutes
+      time-to-live: 600000
 
-  # Admin Server Client
   boot:
     admin:
       client:
         url: http://localhost:9090
 
-# Custom JWT property for token validation
 jwt:
   secretkey: ${GLOBAL_JWT_SECRET}
 
 eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
