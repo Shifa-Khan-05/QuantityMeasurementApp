@@ -9,3 +9,5 @@ COPY target/*.jar app.jar
 
 # Step 4: Run the web service
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
